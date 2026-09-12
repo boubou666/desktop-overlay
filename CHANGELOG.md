@@ -7,8 +7,11 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-09-12
+
 ### Added
 
+- A `SHA256SUMS` file attached to every GitHub release.
 - An Arch Linux recipe for the `python-desktop-overlay` package, built from
   the checksummed 0.2.0 release wheel.
 
@@ -39,6 +42,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
   volume and stereo-position controls and no third-party dependency.
 - Cross-platform tests on Python 3.8 through 3.14.
 
-[Unreleased]: https://github.com/boubou666/desktop-overlay/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/boubou666/desktop-overlay/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/boubou666/desktop-overlay/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/boubou666/desktop-overlay/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/boubou666/desktop-overlay/releases/tag/v0.1.0
