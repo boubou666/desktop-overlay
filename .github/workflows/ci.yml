@@ -41,7 +41,7 @@ jobs:
         run: uv run --no-project python -m unittest discover -s tests -v
 
       - name: Import without opening a display
-        run: uv run --no-project python -c "import desktop_overlay; import desktop_overlay.audio; import desktop_overlay.window"
+        run: uv run --no-project python -c "import desktop_overlay; import desktop_overlay.audio; import desktop_overlay.monitors; import desktop_overlay.window"
 
   build:
     name: package

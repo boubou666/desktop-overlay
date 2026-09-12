@@ -8,9 +8,9 @@ This project extracts the platform work shared by
 unobtrusive Tk windows, animation timing, native pixel surfaces, and audio.
 Applications keep ownership of what they draw and when they draw it.
 
-The project is in its first alpha. Version 0.1.0 provides the common geometry,
-Tk window preparation, and native Linux WAV playback that the two applications
-had started maintaining separately.
+The project is in alpha. Version 0.2.0 provides cross-platform monitor
+enumeration, common geometry, Tk window preparation, and native Linux WAV
+playback that the two applications had started maintaining separately.
 
 ## Principles
 
@@ -26,7 +26,7 @@ had started maintaining separately.
 Until the first PyPI release, install directly from GitHub:
 
 ~~~console
-python -m pip install git+https://github.com/boubou666/desktop-overlay.git
+python -m pip install git+https://github.com/boubou666/desktop-overlay.git@v0.2.0
 ~~~
 
 ## Monitor geometry
@@ -44,14 +44,20 @@ x, y = monitor.corner_position(400, 200, "bottom-right", margin=24)
 start_x, start_y, x, y = monitor.edge_entry(400, 200, "left")
 ~~~
 
-Monitor selection also makes the caller's default explicit:
+Enumerate the active monitors, then make the caller's selection policy
+explicit:
 
 ~~~python
-from desktop_overlay import pick_monitor
+from desktop_overlay import enumerate_monitors, pick_monitor
 
+monitors = enumerate_monitors()
 monitor = pick_monitor(monitors, preference=None, default="primary")
 monitor = pick_monitor(monitors, preference=None, default="random")
 ~~~
+
+Windows enumeration uses each display's work area so overlays avoid the
+taskbar. Linux uses RandR 1.5 directly over X11 before trying `xrandr`, and
+macOS uses CoreGraphics. A positive fallback monitor is always returned.
 
 ## Tk overlay windows
 
@@ -93,7 +99,6 @@ the source channel count.
 
 ## Roadmap
 
-- Native monitor enumeration from Doot, including direct RandR access.
 - A monotonic animation timeline usable from blocking and Tk event loops.
 - Doot's X11 and Wayland pixel surfaces.
 - Migration adapters and releases for Doot and ButButBut.
