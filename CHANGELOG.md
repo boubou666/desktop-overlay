@@ -7,6 +7,10 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- Updated the Arch Linux recipe to install the verified 0.2.1 release wheel.
+
 ## [0.2.1] - 2026-09-12
 
 ### Added
