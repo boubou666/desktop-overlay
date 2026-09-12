@@ -8,7 +8,7 @@ This project extracts the platform work shared by
 unobtrusive Tk windows, animation timing, native pixel surfaces, and audio.
 Applications keep ownership of what they draw and when they draw it.
 
-The project is in alpha. Version 0.2.0 provides cross-platform monitor
+The project is in alpha. Version 0.2.x provides cross-platform monitor
 enumeration, common geometry, Tk window preparation, and native Linux WAV
 playback that the two applications had started maintaining separately.
 
@@ -26,12 +26,13 @@ playback that the two applications had started maintaining separately.
 Install the checksummed wheel from the GitHub release:
 
 ~~~console
-python -m pip install "desktop-overlay @ https://github.com/boubou666/desktop-overlay/releases/download/v0.2.0/desktop_overlay-0.2.0-py3-none-any.whl#sha256=9ac3676603f73f30bf2d756040cdc35faed9fd5977a6ebf53b5eafd0a5db4f34"
+python -m pip install "desktop-overlay @ https://github.com/boubou666/desktop-overlay/releases/download/v0.2.1/desktop_overlay-0.2.1-py3-none-any.whl"
 ~~~
 
 GitHub Releases are the project's Python distribution channel. Applications
 pin an engine wheel and its SHA-256, so an installation is reproducible without
-a package-index account.
+a package-index account. Every release also attaches a `SHA256SUMS` file for
+independent verification.
 
 On Arch Linux, the repository also contains a package recipe:
 

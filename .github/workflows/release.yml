@@ -44,6 +44,12 @@ jobs:
       - name: Check package metadata
         run: uvx twine check dist/*
 
+      - name: Write SHA-256 checksums
+        shell: bash
+        run: |
+          cd dist
+          sha256sum *.whl *.tar.gz > SHA256SUMS
+
       - name: Keep packages for the GitHub release
         uses: actions/upload-artifact@v4
         with:
