@@ -14,8 +14,8 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- The release workflow can publish an existing tag to PyPI after trusted
-  publishing is configured.
+- GitHub Releases are the canonical Python distribution channel. Consumers can
+  pin the published wheel and its SHA-256 without a package-index account.
 
 ## [0.2.0] - 2026-09-12
 

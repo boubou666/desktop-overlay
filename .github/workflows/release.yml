@@ -5,26 +5,18 @@ on:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
       - "v[0-9]+.[0-9]+.[0-9]+-*"
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: Existing release tag to publish to PyPI
-        required: true
-        type: string
 
 permissions:
   contents: read
 
 jobs:
   build:
-    name: Build ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+    name: Build ${{ github.ref_name }}
     runs-on: ubuntu-latest
     env:
-      RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+      RELEASE_TAG: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ env.RELEASE_TAG }}
 
       - name: Install uv and Python
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d
@@ -52,7 +44,7 @@ jobs:
       - name: Check package metadata
         run: uvx twine check dist/*
 
-      - name: Keep packages for publication
+      - name: Keep packages for the GitHub release
         uses: actions/upload-artifact@v4
         with:
           name: packages
@@ -88,7 +80,6 @@ jobs:
   release:
     name: Publish GitHub release
     needs: build
-    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -111,23 +102,3 @@ jobs:
           prerelease=""
           case "$RELEASE_TAG" in *-*) prerelease="--prerelease";; esac
           gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --title "desktop-overlay $RELEASE_TAG" --notes-file release-notes.md $prerelease dist/*
-
-  pypi:
-    name: Publish to PyPI
-    needs: build
-    if: vars.PYPI_PUBLISH == 'true'
-    runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/p/desktop-overlay
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: packages
-          path: dist/
-
-      - name: Publish
-        uses: pypa/gh-action-pypi-publish@release/v1
