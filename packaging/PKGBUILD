@@ -1,0 +1,25 @@
+# Maintainer: boubou666
+# Build from a clone of desktop-overlay:
+#
+#   cd packaging && makepkg -si
+#
+# The recipe installs the same wheel published by the GitHub release. Its
+# checksum is also used by Doot and ButButBut's standalone installers.
+
+pkgname=python-desktop-overlay
+_distname=desktop_overlay
+pkgver=0.2.0
+pkgrel=1
+pkgdesc="Zero-dependency cross-platform Python primitives for desktop overlays"
+arch=('any')
+url="https://github.com/boubou666/desktop-overlay"
+license=('MIT')
+depends=('python')
+makedepends=('python-installer')
+source=("https://github.com/boubou666/desktop-overlay/releases/download/v$pkgver/${_distname}-$pkgver-py3-none-any.whl")
+sha256sums=('9ac3676603f73f30bf2d756040cdc35faed9fd5977a6ebf53b5eafd0a5db4f34')
+
+package() {
+    python -m installer --destdir="$pkgdir" \
+        "$srcdir/${_distname}-$pkgver-py3-none-any.whl"
+}
