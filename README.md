@@ -29,6 +29,17 @@ Until the first PyPI release, install directly from GitHub:
 python -m pip install git+https://github.com/boubou666/desktop-overlay.git@v0.2.0
 ~~~
 
+On Arch Linux, the repository also contains a package recipe:
+
+~~~console
+cd packaging
+makepkg -si
+~~~
+
+It installs the same release wheel under the package name
+`python-desktop-overlay`, allowing several overlay applications to share one
+owned copy.
+
 ## Monitor geometry
 
 The same monitor can support a random ambient appearance or an anchored

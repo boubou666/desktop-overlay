@@ -7,6 +7,11 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- An Arch Linux recipe for the `python-desktop-overlay` package, built from
+  the checksummed 0.2.0 release wheel.
+
 ## [0.2.0] - 2026-09-12
 
 ### Added

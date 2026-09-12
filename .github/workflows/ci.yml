@@ -54,6 +54,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Check Arch recipe
+        run: bash -n packaging/PKGBUILD
+
       - name: Build
         run: uv build --no-sources
 
