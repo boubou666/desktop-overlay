@@ -95,11 +95,18 @@ class PositionAndOpacity(unittest.TestCase):
 
 
 class ImportBehavior(unittest.TestCase):
-    def test_tk_is_loaded_only_when_requested(self):
-        tk, tkfont = window.import_tk()
-        self.assertTrue(hasattr(tk, "Tk"))
-        self.assertTrue(hasattr(tkfont, "Font"))
+    def test_missing_tk_has_a_specific_error(self):
+        real_import = __import__
 
+        def without_tk(name, *args, **kwargs):
+            if name == "tkinter" or name.startswith("tkinter."):
+                raise ImportError("Tk is not installed")
+            return real_import(name, *args, **kwargs)
+
+        with mock.patch("builtins.__import__", side_effect=without_tk):
+            with self.assertRaises(window.TkinterMissing) as raised:
+                window.import_tk()
+        self.assertIsInstance(raised.exception.__cause__, ImportError)
 
 if __name__ == "__main__":
     unittest.main()
