@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: tests ${{ matrix.os }} / Python ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ["3.9", "3.12", "3.13", "3.14"]
+        include:
+          - os: ubuntu-latest
+            python: "3.8"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv and Python ${{ matrix.python }}
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Tk on Linux
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y python3-tk
+
+      - name: Compile
+        run: uv run --no-project python -m compileall -q desktop_overlay tests
+
+      - name: Test
+        run: uv run --no-project python -m unittest discover -s tests -v
+
+      - name: Import without opening a display
+        run: uv run --no-project python -c "import desktop_overlay; import desktop_overlay.audio; import desktop_overlay.window"
+
+  build:
+    name: package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d
+        with:
+          python-version: "3.12"
+
+      - name: Build
+        run: uv build --no-sources
+
+      - name: Check package metadata
+        run: uvx twine check dist/*
+
+  ci-ok:
+    name: CI ok
+    if: always()
+    needs: [tests, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: All jobs passed
+        run: |
+          [ "${{ needs.tests.result }}" = "success" ] || {
+            echo "tests: ${{ needs.tests.result }}"
+            exit 1
+          }
+          [ "${{ needs.build.result }}" = "success" ] || {
+            echo "build: ${{ needs.build.result }}"
+            exit 1
+          }

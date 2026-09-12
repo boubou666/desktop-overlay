@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "desktop-overlay"
+version = "0.1.0"
+description = "Zero-dependency cross-platform primitives for desktop overlays."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "boubou666" }]
+keywords = [
+    "desktop", "overlay", "tkinter", "audio", "cross-platform", "windows",
+    "linux", "macos",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: X11 Applications",
+    "Environment :: Win32 (MS Windows)",
+    "Environment :: MacOS X",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/boubou666/desktop-overlay"
+Repository = "https://github.com/boubou666/desktop-overlay"
+Changelog = "https://github.com/boubou666/desktop-overlay/blob/main/CHANGELOG.md"
+Issues = "https://github.com/boubou666/desktop-overlay/issues"
+
+[tool.setuptools]
+packages = ["desktop_overlay"]

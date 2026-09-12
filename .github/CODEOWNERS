@@ -1,0 +1,4 @@
+# External contributions automatically request review from the maintainer.
+# The main ruleset does not require code-owner approval while the repository
+# has a single maintainer, because GitHub does not allow self-approval.
+*   @boubou666

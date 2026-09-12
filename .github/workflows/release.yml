@@ -1,0 +1,95 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Publish ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d
+        with:
+          python-version: "3.12"
+
+      - name: Tag matches the package version
+        shell: bash
+        run: |
+          declared=$(uv run --no-project python -c "import desktop_overlay; print(desktop_overlay.__version__)")
+          tagged="${GITHUB_REF_NAME#v}"
+          tagged="${tagged%%-*}"
+          test "$declared" = "$tagged"
+
+      - name: Test
+        run: uv run --no-project python -m unittest discover -s tests
+
+      - name: Build
+        run: uv build --no-sources
+
+      - name: Check package metadata
+        run: uvx twine check dist/*
+
+      - name: Keep packages for PyPI
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: dist/
+
+      - name: Release notes from changelog
+        shell: uv run --no-project python {0}
+        run: |
+          import os
+          import re
+          from pathlib import Path
+
+          version = os.environ["GITHUB_REF_NAME"].lstrip("v")
+          text = Path("CHANGELOG.md").read_text(encoding="utf-8")
+          pattern = re.compile(
+              r"^## \[" + re.escape(version)
+              + r"\][^\n]*\n(.*?)(?=^## \[|^\[[^\]]+\]:|\Z)",
+              re.MULTILINE | re.DOTALL,
+          )
+          found = pattern.search(text)
+          body = found.group(1).strip() if found else ""
+          Path("release-notes.md").write_text(
+              (body or "See the changelog for this release.") + "\n",
+              encoding="utf-8",
+          )
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          prerelease=""
+          case "$GITHUB_REF_NAME" in *-*) prerelease="--prerelease";; esac
+          gh release create "$GITHUB_REF_NAME" --title "desktop-overlay $GITHUB_REF_NAME" --notes-file release-notes.md $prerelease dist/*
+
+  pypi:
+    name: Publish to PyPI
+    needs: release
+    if: vars.PYPI_PUBLISH == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/desktop-overlay
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
+          path: dist/
+
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@release/v1
