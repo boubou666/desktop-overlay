@@ -12,6 +12,11 @@ and this project follows [Semantic Versioning](https://semver.org/).
 - An Arch Linux recipe for the `python-desktop-overlay` package, built from
   the checksummed 0.2.0 release wheel.
 
+### Changed
+
+- The release workflow can publish an existing tag to PyPI after trusted
+  publishing is configured.
+
 ## [0.2.0] - 2026-09-12
 
 ### Added
