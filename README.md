@@ -16,7 +16,9 @@ playback that the two applications had started maintaining separately.
 
 - Python 3.8 or newer.
 - Standard library only.
-- Windows, macOS, and Linux are tested.
+- Windows, macOS, and Linux are tested. Android works when Python is embedded
+  with [Chaquopy](https://chaquo.com/chaquopy/); it is covered by tests that
+  fake the Java bridge.
 - Headless imports: using geometry or audio must not create a Tk window.
 - Platform failures return a usable fallback instead of taking down the caller.
 - Application policy remains in the application.

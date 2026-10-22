@@ -7,6 +7,12 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Android support for Python embedded with Chaquopy: `desktop_overlay.android`
+  reaches the platform through the Java bridge, monitor enumeration reports
+  the real display size, and WAV playback goes through `AudioTrack`.
+
 ### Changed
 
 - Updated the Arch Linux recipe to install the verified 0.2.1 release wheel.
