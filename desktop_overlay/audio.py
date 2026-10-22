@@ -183,7 +183,7 @@ class _AlsaOutput:
         self.lib.snd_pcm_close(self.pcm)
 
 
-class _AndroidOutput:
+class AndroidOutput:
     """Android's AudioTrack, reached through Chaquopy's Java bridge."""
 
     name = "Android AudioTrack"
@@ -250,7 +250,7 @@ class _AndroidOutput:
             self.track.release()
 
 
-_OUTPUTS = (_AndroidOutput, _PulseOutput, _AlsaOutput)
+_OUTPUTS = (AndroidOutput, _PulseOutput, _AlsaOutput)
 
 
 def available() -> bool:

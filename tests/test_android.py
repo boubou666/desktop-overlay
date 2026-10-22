@@ -113,16 +113,16 @@ class AudioTrackOutput(unittest.TestCase):
         self.addCleanup(bridge.stop)
 
     def test_android_output_comes_first(self):
-        self.assertIs(audio._OUTPUTS[0], audio._AndroidOutput)
+        self.assertIs(audio._OUTPUTS[0], audio.AndroidOutput)
         self.assertEqual(audio.backend_name(), "Android AudioTrack")
 
     def test_stereo_stream_is_opened_and_started(self):
-        audio._AndroidOutput(44100, 2)
+        audio.AndroidOutput(44100, 2)
         self.track_class.getMinBufferSize.assert_called_once_with(44100, 12, 2)
         self.track.play.assert_called_once_with()
 
     def test_writes_count_frames_and_report_short_writes(self):
-        output = audio._AndroidOutput(44100, 2)
+        output = audio.AndroidOutput(44100, 2)
         self.assertTrue(output.write(b"\0" * 400))
         self.assertEqual(output.frames, 100)
         self.track.write.side_effect = lambda block, offset, size: size - 4
@@ -131,7 +131,7 @@ class AudioTrackOutput(unittest.TestCase):
         self.assertFalse(output.write(b"\0" * 400))
 
     def test_drain_waits_for_the_playback_head(self):
-        output = audio._AndroidOutput(44100, 1)
+        output = audio.AndroidOutput(44100, 1)
         output.write(b"\0" * 200)
         self.track.getPlaybackHeadPosition.side_effect = [10, 60, 100]
         with mock.patch.object(audio.time, "sleep") as sleep:
@@ -139,7 +139,7 @@ class AudioTrackOutput(unittest.TestCase):
         self.assertEqual(sleep.call_count, 2)
 
     def test_close_stops_then_releases(self):
-        output = audio._AndroidOutput(44100, 1)
+        output = audio.AndroidOutput(44100, 1)
         self.track.stop.side_effect = RuntimeError("already stopped")
         with self.assertRaises(RuntimeError):
             output.close()
