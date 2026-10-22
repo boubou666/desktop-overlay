@@ -1,7 +1,8 @@
 """Native WAV playback for desktop overlays, without third-party packages.
 
 Linux playback uses PulseAudio's simple API, which also covers PipeWire, and
-falls back to ALSA. Windows and macOS return None so applications can keep
+falls back to ALSA. Android plays through AudioTrack when Python is embedded
+with Chaquopy. Windows and macOS return None so applications can keep
 their existing winsound, MCI, afplay, or compressed-file fallback.
 
 Only 16-bit mono and stereo WAV files are handled. Volume and stereo position
@@ -182,7 +183,74 @@ class _AlsaOutput:
         self.lib.snd_pcm_close(self.pcm)
 
 
-_OUTPUTS = (_PulseOutput, _AlsaOutput)
+class _AndroidOutput:
+    """Android's AudioTrack, reached through Chaquopy's Java bridge."""
+
+    name = "Android AudioTrack"
+
+    @staticmethod
+    def library():
+        from . import android
+
+        return android.jclass("android.media.AudioTrack")
+
+    def __init__(self, rate: int, channels: int):
+        from . import android
+
+        track = self.library()
+        audio_format = android.jclass("android.media.AudioFormat")
+        attributes = android.jclass("android.media.AudioAttributes")
+        mask = (audio_format.CHANNEL_OUT_STEREO if channels == 2
+                else audio_format.CHANNEL_OUT_MONO)
+        encoding = audio_format.ENCODING_PCM_16BIT
+        minimum = track.getMinBufferSize(rate, mask, encoding)
+        if minimum <= 0:
+            raise OSError("AudioTrack.getMinBufferSize failed")
+        self.rate = rate
+        self.frame_bytes = 2 * channels
+        self.frames = 0
+        self.track = (
+            track.Builder()
+            .setAudioAttributes(
+                attributes.Builder()
+                .setUsage(attributes.USAGE_MEDIA)
+                .setContentType(attributes.CONTENT_TYPE_SONIFICATION)
+                .build())
+            .setAudioFormat(
+                audio_format.Builder()
+                .setEncoding(encoding)
+                .setSampleRate(rate)
+                .setChannelMask(mask)
+                .build())
+            .setBufferSizeInBytes(max(minimum, CHUNK_FRAMES * self.frame_bytes))
+            .setTransferMode(track.MODE_STREAM)
+            .build()
+        )
+        self.track.play()
+
+    def write(self, block: bytes) -> bool:
+        written = self.track.write(block, 0, len(block))
+        if written < 0:
+            return False
+        self.frames += written // self.frame_bytes
+        return written == len(block)
+
+    def drain(self) -> None:
+        """Wait until the hardware has played every written frame."""
+        deadline = time.monotonic() + self.frames / self.rate + 1.0
+        while time.monotonic() < deadline:
+            if self.track.getPlaybackHeadPosition() >= self.frames:
+                return
+            time.sleep(0.02)
+
+    def close(self) -> None:
+        try:
+            self.track.stop()
+        finally:
+            self.track.release()
+
+
+_OUTPUTS = (_AndroidOutput, _PulseOutput, _AlsaOutput)
 
 
 def available() -> bool:
