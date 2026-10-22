@@ -34,6 +34,13 @@ def jclass(name: str):
         return None
 
 
+def byte_array(data: bytes):
+    """Return `data` as a Java byte[], which overloaded Java methods need."""
+    from java import jarray, jbyte
+
+    return jarray(jbyte)(data)
+
+
 def context():
     """Return the Android application context, or None."""
     python = jclass("com.chaquo.python.Python")
@@ -45,4 +52,4 @@ def context():
         return None
 
 
-__all__ = ["context", "is_android", "jclass"]
+__all__ = ["byte_array", "context", "is_android", "jclass"]

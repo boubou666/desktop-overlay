@@ -229,7 +229,9 @@ class AndroidOutput:
         self.track.play()
 
     def write(self, block: bytes) -> bool:
-        written = self.track.write(block, 0, len(block))
+        from . import android
+
+        written = self.track.write(android.byte_array(block), 0, len(block))
         if written < 0:
             return False
         self.frames += written // self.frame_bytes

@@ -16,6 +16,8 @@ def fake_java(classes):
         return classes[name]
 
     module.jclass = jclass
+    module.jbyte = "byte"
+    module.jarray = lambda element: (lambda data: bytes(data))
     return module
 
 
