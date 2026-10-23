@@ -8,7 +8,7 @@
 
 pkgname=python-desktop-overlay
 _distname=desktop_overlay
-pkgver=0.2.1
+pkgver=0.3.0
 pkgrel=1
 pkgdesc="Zero-dependency cross-platform Python primitives for desktop overlays"
 arch=('any')
@@ -17,7 +17,7 @@ license=('MIT')
 depends=('python')
 makedepends=('python-installer')
 source=("https://github.com/boubou666/desktop-overlay/releases/download/v$pkgver/${_distname}-$pkgver-py3-none-any.whl")
-sha256sums=('c752c46c077390a1f6cc6569dae09df302a2d0810b6a555122366be38928c972')
+sha256sums=('d9cef4b14b7a7a6dd5cca83a5bb7de1357cea25d9296dc4523d478b3112ddca6')
 
 package() {
     python -m installer --destdir="$pkgdir" \
