@@ -1,6 +1,6 @@
 """Shared building blocks for unobtrusive desktop overlays."""
 
-__version__ = "0.2.1"
+__version__ = "0.3.0"
 
 from .geometry import Monitor, ease_out, pan_for, pick_monitor
 from .monitors import enumerate_monitors

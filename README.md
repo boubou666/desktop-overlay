@@ -8,9 +8,10 @@ This project extracts the platform work shared by
 unobtrusive Tk windows, animation timing, native pixel surfaces, and audio.
 Applications keep ownership of what they draw and when they draw it.
 
-The project is in alpha. Version 0.2.x provides cross-platform monitor
+The project is in alpha. Version 0.3.x provides cross-platform monitor
 enumeration, common geometry, Tk window preparation, and native Linux WAV
-playback that the two applications had started maintaining separately.
+playback that the two applications had started maintaining separately, and
+runs on Android when Python is embedded with Chaquopy.
 
 ## Principles
 
@@ -28,7 +29,7 @@ playback that the two applications had started maintaining separately.
 Install the checksummed wheel from the GitHub release:
 
 ~~~console
-python -m pip install "desktop-overlay @ https://github.com/boubou666/desktop-overlay/releases/download/v0.2.1/desktop_overlay-0.2.1-py3-none-any.whl"
+python -m pip install "desktop-overlay @ https://github.com/boubou666/desktop-overlay/releases/download/v0.3.0/desktop_overlay-0.3.0-py3-none-any.whl"
 ~~~
 
 GitHub Releases are the project's Python distribution channel. Applications
