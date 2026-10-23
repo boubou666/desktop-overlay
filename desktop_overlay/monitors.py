@@ -357,13 +357,29 @@ def _macos_monitors() -> list[Monitor]:
     return found
 
 
+def _android_monitors() -> list[Monitor]:
+    from . import android
+
+    app = android.context()
+    display_metrics = android.jclass("android.util.DisplayMetrics")
+    if app is None or display_metrics is None:
+        return []
+    metrics = display_metrics()
+    app.getSystemService("window").getDefaultDisplay().getRealMetrics(metrics)
+    return [Monitor(0, 0, metrics.widthPixels, metrics.heightPixels,
+                    primary=True, name="display")]
+
+
 def enumerate_monitors(fallback_width: int = 1920,
                        fallback_height: int = 1080) -> list[Monitor]:
     """Return usable monitor rectangles, or one safe fallback rectangle."""
-    detect = {
-        "win32": _windows_monitors,
-        "darwin": _macos_monitors,
-    }.get(sys.platform, _linux_monitors)
+    if hasattr(sys, "getandroidapilevel"):
+        detect = _android_monitors
+    else:
+        detect = {
+            "win32": _windows_monitors,
+            "darwin": _macos_monitors,
+        }.get(sys.platform, _linux_monitors)
 
     try:
         found = detect()
